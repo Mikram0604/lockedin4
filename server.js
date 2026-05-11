@@ -205,6 +205,54 @@ app.post('/api/checkin', (req, res) => {
   res.json({ success: true, message: `Check-in message sent to ${studentName} via WhatsApp!` });
 });
 
+// ---------------------------------------------------------
+// WHATSAPP WEB INTEGRATION (Personal Number Bot)
+// ---------------------------------------------------------
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+const waClient = new Client({
+  authStrategy: new LocalAuth(),
+  puppeteer: { 
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+  }
+});
+
+waClient.on('qr', (qr) => {
+  console.log('\n======================================================');
+  console.log('📱 SCAN THIS QR CODE WITH YOUR WHATSAPP TO CONNECT 📱');
+  console.log('======================================================\n');
+  qrcode.generate(qr, { small: true });
+});
+
+waClient.on('ready', () => {
+  console.log('\n✅ WHATSAPP CONNECTED SUCCESSFULLY! Your personal number is now the bot.');
+});
+
+waClient.on('message', async msg => {
+  // Ignore status and group messages
+  const chat = await msg.getChat();
+  if (msg.isStatus || chat.isGroup) return;
+
+  const message = msg.body;
+  const phone = msg.from.replace('@c.us', '');
+  console.log(`--- WHATSAPP WEB: ${phone}: "${message}" ---`);
+
+  try {
+    const fakeRes = { jsonData: null, json: function(d) { this.jsonData = d; } };
+    await chatHandler({ body: { message, phone } }, fakeRes);
+    
+    const reply = fakeRes.jsonData?.reply || "I'm here to help! Try asking about scholarships.";
+    await msg.reply(reply);
+    console.log(`Reply sent to ${phone} via WhatsApp Web`);
+  } catch (err) {
+    console.error('WhatsApp Web error:', err);
+  }
+});
+
+waClient.initialize();
+
 app.listen(PORT, () => {
   console.log(`Disha server is running on port ${PORT}`);
   console.log(`Chat API: http://localhost:${PORT}/api/chat`);

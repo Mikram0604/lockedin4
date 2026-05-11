@@ -1,0 +1,5 @@
+2026/05/12-03:30:42.211 7db4 Creating DB C:\Users\Mohammed Ikram\OneDrive\Desktop\disha\.wwebjs_auth\session\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/05/12-03:30:42.221 7db4 Reusing MANIFEST C:\Users\Mohammed Ikram\OneDrive\Desktop\disha\.wwebjs_auth\session\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/05/12-03:30:42.460 9b8c Level-0 table #5: started
+2026/05/12-03:30:42.462 9b8c Level-0 table #5: 682457 bytes OK
+2026/05/12-03:30:42.464 9b8c Delete type=0 #3
