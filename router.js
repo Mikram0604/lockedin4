@@ -5,14 +5,19 @@ const walkerAgent = require('./agents/walker');
 const knowledgeAgent = require('./agents/knowledge');
 
 async function router(req, res) {
-  // Acknowledge Twilio quickly to avoid timeout
-  res.status(200).send('OK');
+  console.log('--- WEBHOOK HIT ---');
+  console.log('Body:', JSON.stringify(req.body));
 
   const { Body, From } = req.body;
-  if (!Body || !From) return;
+  if (!Body || !From) {
+    console.log('Missing Body or From, ignoring.');
+    res.status(200).send('<Response></Response>');
+    return;
+  }
 
   const phone = From.replace('whatsapp:', '');
   const message = Body.trim();
+  console.log(`Message from ${phone}: "${message}"`);
 
   try {
     // 1. Check if student exists and their onboarding status
@@ -24,12 +29,15 @@ async function router(req, res) {
 
     if (studentError && studentError.code !== 'PGRST116') {
       console.error('Error fetching student:', studentError);
+      res.status(200).send('<Response></Response>');
       return;
     }
 
     // New student or not fully onboarded -> Route to Intake Agent
     if (!student || !student.onboarding_complete) {
+      console.log('Routing to Intake Agent');
       await intakeAgent.handleMessage(phone, message, student);
+      res.status(200).send('<Response></Response>');
       return;
     }
 
@@ -42,23 +50,30 @@ async function router(req, res) {
       .single();
 
     if (walkState) {
+      console.log('Routing to Walker Agent');
       await walkerAgent.handleMessage(phone, message, student, walkState);
+      res.status(200).send('<Response></Response>');
       return;
     }
 
     // 3. Simple Keyword Intent Matching for Walker Agent initiation
     const lowerMsg = message.toLowerCase();
     if (lowerMsg.includes('apply') || lowerMsg.includes('scholarship') || lowerMsg.includes('form') || lowerMsg.includes('help with')) {
+      console.log('Routing to Walker Agent (new flow)');
       await walkerAgent.startFlow(phone, message, student);
+      res.status(200).send('<Response></Response>');
       return;
     }
 
     // 4. Default fallback -> Route to Knowledge Agent for Q&A
+    console.log('Routing to Knowledge Agent');
     await knowledgeAgent.handleMessage(phone, message, student);
+    res.status(200).send('<Response></Response>');
 
   } catch (error) {
     console.error('Router error:', error);
     await sendWhatsAppMessage(phone, "I'm having a little trouble right now, but I'll be back soon to help you.");
+    res.status(200).send('<Response></Response>');
   }
 }
 
