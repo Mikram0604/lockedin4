@@ -39,33 +39,36 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'Disha API' });
 });
 
-// Twilio WhatsApp webhook - responds immediately, processes async
-app.post('/webhook', (req, res) => {
-  // Respond to Twilio IMMEDIATELY so it doesn't timeout
-  res.status(200).send('<Response></Response>');
-
+// Twilio WhatsApp webhook - responds synchronously with TwiML
+app.post('/webhook', async (req, res) => {
   const { Body, From } = req.body;
-  if (!Body || !From) return;
+  if (!Body || !From) {
+    return res.status(200).send('<Response></Response>');
+  }
 
   const phone = From.replace('whatsapp:', '');
   const message = Body.trim();
   console.log(`--- WEBHOOK: ${phone}: "${message}" ---`);
 
-  // Process async (don't block the response)
-  setImmediate(async () => {
-    try {
-      const fakeRes = { jsonData: null, json: function(d) { this.jsonData = d; } };
-      await chatHandler({ body: { message, phone } }, fakeRes);
-      
-      const reply = fakeRes.jsonData?.reply || "I'm here to help! Try asking about scholarships.";
-      
-      const { sendWhatsAppMessage } = require('./services/twilio');
-      await sendWhatsAppMessage(phone, reply);
-      console.log(`Reply sent to ${phone}`);
-    } catch (err) {
-      console.error('Webhook error:', err);
-    }
-  });
+  try {
+    const fakeRes = { jsonData: null, json: function(d) { this.jsonData = d; } };
+    await chatHandler({ body: { message, phone } }, fakeRes);
+    
+    const reply = fakeRes.jsonData?.reply || "I'm here to help! Try asking about scholarships.";
+    
+    // Generate TwiML response (guaranteed to work, no API keys needed)
+    const { MessagingResponse } = require('twilio').twiml;
+    const twiml = new MessagingResponse();
+    twiml.message(reply);
+    
+    res.type('text/xml');
+    res.status(200).send(twiml.toString());
+    console.log(`TwiML Reply sent to ${phone}`);
+  } catch (err) {
+    console.error('Webhook error:', err);
+    res.type('text/xml');
+    res.status(200).send('<Response><Message>I am having a little trouble connecting right now. Please try again in a moment.</Message></Response>');
+  }
 });
 
 // Chat API endpoint (replaces Twilio webhook for demo)
