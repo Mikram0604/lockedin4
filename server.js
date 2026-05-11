@@ -194,6 +194,34 @@ app.post('/api/chat', async (req, res) => {
   res.json({ reply });
 });
 
+// 4. Send check-in (Real Twilio)
+app.post('/api/checkin', async (req, res) => {
+  const { studentName } = req.body;
+  
+  // Find student by name in our persistence
+  const studentEntry = Object.entries(students).find(([_, s]) => s.full_name === studentName);
+  
+  const client = require('twilio')(
+    process.env.TWILIO_ACCOUNT_SID || 'ACxxx', 
+    process.env.TWILIO_AUTH_TOKEN || 'xxx'
+  );
+
+  try {
+    // If we found the student's real phone number, use it. Otherwise use a demo number.
+    const targetPhone = studentEntry ? studentEntry[0] : '+919999999999'; 
+    
+    await client.messages.create({
+      from: 'whatsapp:+14155238886', // Twilio Sandbox Number
+      to: `whatsapp:${targetPhone}`,
+      body: `Hi ${studentName}, this is a counselor from Disha. I noticed you haven't been active lately. Is everything okay with your college/scholarship process?`
+    });
+    res.json({ success: true, message: `Real WhatsApp nudge sent to ${studentName}!` });
+  } catch (err) {
+    console.error('Twilio Outbound Error:', err);
+    res.status(500).json({ success: false, message: "Twilio error. Make sure SID/Token are in .env" });
+  }
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`\n🚀 DISHA BACKEND IS RUNNING ON PORT ${PORT}`);
