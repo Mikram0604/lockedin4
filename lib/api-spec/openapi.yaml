@@ -1,0 +1,499 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Disha — AI Companion for First-Generation College Students
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: students
+    description: Student profiles and management
+  - name: conversations
+    description: Student conversation history
+  - name: risk-flags
+    description: Risk flags and dropout early warning
+  - name: scholarships
+    description: Scholarship schemes
+  - name: dashboard
+    description: Counselor dashboard summary
+  - name: webhook
+    description: Twilio incoming message webhook
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /students:
+    get:
+      operationId: listStudents
+      tags: [students]
+      summary: List all students
+      parameters:
+        - name: riskLevel
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+        - name: college
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: flagged
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Get a student by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update student profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "404":
+          description: Not found
+
+  /students/{id}/conversations:
+    get:
+      operationId: getStudentConversations
+      tags: [conversations]
+      summary: Get conversation history for a student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ConversationMessage"
+
+  /students/{id}/nudges:
+    get:
+      operationId: getStudentNudges
+      tags: [students]
+      summary: Get nudge history for a student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Nudge history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NudgeHistory"
+        "404":
+          description: Not found
+
+  /students/{id}/check-in:
+    post:
+      operationId: sendCheckIn
+      tags: [students]
+      summary: Counselor sends immediate check-in message to a student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckInInput"
+      responses:
+        "200":
+          description: Check-in sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckInResult"
+        "404":
+          description: Not found
+
+  /risk-flags:
+    get:
+      operationId: listRiskFlags
+      tags: [risk-flags]
+      summary: List risk flags
+      parameters:
+        - name: resolved
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: severity
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [medium, high, critical]
+      responses:
+        "200":
+          description: List of risk flags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RiskFlag"
+
+  /risk-flags/{id}/resolve:
+    patch:
+      operationId: resolveRiskFlag
+      tags: [risk-flags]
+      summary: Mark a risk flag as resolved
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Resolved flag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskFlag"
+        "404":
+          description: Not found
+
+  /scholarships:
+    get:
+      operationId: listScholarships
+      tags: [scholarships]
+      summary: List all scholarships
+      responses:
+        "200":
+          description: List of scholarships
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scholarship"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get counselor dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /webhook/twilio:
+    post:
+      operationId: twilioWebhook
+      tags: [webhook]
+      summary: Receive incoming Twilio SMS/WhatsApp message
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/TwilioWebhookInput"
+      responses:
+        "200":
+          description: TwiML response
+          content:
+            application/xml:
+              schema:
+                type: string
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Student:
+      type: object
+      required: [id, name, phone, college, branch, year, district, incomeRange, casteCategory, feeStatus, languagePreference, onboardingComplete, riskScore, riskLevel, daysSilent, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        college:
+          type: string
+        branch:
+          type: string
+        year:
+          type: integer
+        district:
+          type: ["string", "null"]
+        incomeRange:
+          type: ["string", "null"]
+        casteCategory:
+          type: ["string", "null"]
+        feeStatus:
+          type: string
+          enum: [paid, partial, pending, unknown]
+        languagePreference:
+          type: string
+          enum: [english, kannada, hindi, telugu, tamil]
+        onboardingComplete:
+          type: boolean
+        onboardingStep:
+          type: integer
+        riskScore:
+          type: integer
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+        daysSilent:
+          type: integer
+        lastMessageAt:
+          type: ["string", "null"]
+        flagged:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    StudentUpdate:
+      type: object
+      properties:
+        feeStatus:
+          type: string
+          enum: [paid, partial, pending, unknown]
+        flagged:
+          type: boolean
+        riskScore:
+          type: integer
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+
+    ConversationMessage:
+      type: object
+      required: [id, studentId, direction, message, agentType, createdAt]
+      properties:
+        id:
+          type: integer
+        studentId:
+          type: integer
+        direction:
+          type: string
+          enum: [inbound, outbound]
+        message:
+          type: string
+        agentType:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    RiskFlag:
+      type: object
+      required: [id, studentId, studentName, severity, reason, riskScore, resolved, createdAt]
+      properties:
+        id:
+          type: integer
+        studentId:
+          type: integer
+        studentName:
+          type: string
+        studentCollege:
+          type: ["string", "null"]
+        severity:
+          type: string
+          enum: [medium, high, critical]
+        reason:
+          type: string
+        riskScore:
+          type: integer
+        resolved:
+          type: boolean
+        resolvedAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    Scholarship:
+      type: object
+      required: [id, name, amount, deadline, eligibilitySummary, category]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        amount:
+          type: integer
+        deadline:
+          type: string
+        eligibilitySummary:
+          type: string
+        category:
+          type: string
+        isActive:
+          type: boolean
+
+    DashboardSummary:
+      type: object
+      required: [totalStudents, atRiskToday, criticalCount, nudgesSentToday, scholarshipsAssisted, onboardingComplete, averageRiskScore, riskBreakdown]
+      properties:
+        totalStudents:
+          type: integer
+        atRiskToday:
+          type: integer
+        criticalCount:
+          type: integer
+        nudgesSentToday:
+          type: integer
+        scholarshipsAssisted:
+          type: integer
+        onboardingComplete:
+          type: integer
+        averageRiskScore:
+          type: number
+        riskBreakdown:
+          type: object
+          required: [low, medium, high, critical]
+          properties:
+            low:
+              type: integer
+            medium:
+              type: integer
+            high:
+              type: integer
+            critical:
+              type: integer
+
+    NudgeHistory:
+      type: object
+      required: [id, studentId, message, triggerReason, responded, createdAt]
+      properties:
+        id:
+          type: integer
+        studentId:
+          type: integer
+        message:
+          type: string
+        triggerReason:
+          type: string
+        responded:
+          type: boolean
+        createdAt:
+          type: string
+
+    CheckInInput:
+      type: object
+      properties:
+        message:
+          type: string
+
+    CheckInResult:
+      type: object
+      required: [success, message]
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        sid:
+          type: ["string", "null"]
+
+    TwilioWebhookInput:
+      type: object
+      properties:
+        From:
+          type: string
+        Body:
+          type: string
+        MessageSid:
+          type: string
+        To:
+          type: string
