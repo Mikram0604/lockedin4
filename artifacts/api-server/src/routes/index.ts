@@ -6,6 +6,7 @@ import scholarshipsRouter from "./scholarships";
 import dashboardRouter from "./dashboard";
 import webhookRouter from "./webhook";
 import adminRouter from "./admin";
+import webChatRouter from "./webChat";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(scholarshipsRouter);
 router.use(dashboardRouter);
 router.use(webhookRouter);
 router.use(adminRouter);
+router.use(webChatRouter);
 
 export default router;

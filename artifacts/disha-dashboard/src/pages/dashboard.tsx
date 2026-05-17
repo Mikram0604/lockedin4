@@ -53,11 +53,11 @@ export default function Dashboard() {
             animate="show"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6"
           >
-            <motion.div variants={item}><StatCard title="Total Students" value={summary.totalStudents} icon={Users} /></motion.div>
-            <motion.div variants={item}><StatCard title="At Risk Today" value={summary.atRiskToday} icon={AlertCircle} alert={summary.atRiskToday > 0} /></motion.div>
-            <motion.div variants={item}><StatCard title="Critical Flags" value={summary.criticalCount} icon={BellRing} alert={summary.criticalCount > 0} /></motion.div>
-            <motion.div variants={item}><StatCard title="Nudges Sent" value={summary.nudgesSentToday} icon={Send} /></motion.div>
-            <motion.div variants={item}><StatCard title="Scholarships" value={summary.scholarshipsAssisted} icon={GraduationCap} /></motion.div>
+            <motion.div variants={item}><StatCard title="Total Students" value={summary.totalStudents} icon={Users} href="/students" /></motion.div>
+            <motion.div variants={item}><StatCard title="At Risk Today" value={summary.atRiskToday} icon={AlertCircle} alert={summary.atRiskToday > 0} href="/alerts" /></motion.div>
+            <motion.div variants={item}><StatCard title="Critical Flags" value={summary.criticalCount} icon={BellRing} alert={summary.criticalCount > 0} href="/alerts" /></motion.div>
+            <motion.div variants={item}><StatCard title="Nudges Sent" value={summary.nudgesSentToday} icon={Send} href="/students" /></motion.div>
+            <motion.div variants={item}><StatCard title="Scholarships" value={summary.scholarshipsAssisted} icon={GraduationCap} href="/scholarships" /></motion.div>
           </motion.div>
         ) : null}
 
@@ -164,9 +164,9 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ title, value, icon: Icon, alert }: { title: string, value: number, icon: any, alert?: boolean }) {
-  return (
-    <Card className={`rounded-3xl border-0 shadow-sm relative overflow-hidden ${alert ? "bg-red-50/50" : "bg-card"}`}>
+function StatCard({ title, value, icon: Icon, alert, href }: { title: string, value: number, icon: any, alert?: boolean, href?: string }) {
+  const cardContent = (
+    <Card className={`rounded-3xl border-0 shadow-sm relative overflow-hidden transition-transform ${href ? "hover:scale-[1.02] cursor-pointer" : ""} ${alert ? "bg-red-50/50" : "bg-card"}`}>
       {alert && <div className="absolute top-0 left-0 w-full h-1 bg-red-500" />}
       <CardContent className="p-6 flex flex-col justify-between h-full relative z-10">
         <div className="flex items-center justify-between mb-6">
@@ -181,6 +181,11 @@ function StatCard({ title, value, icon: Icon, alert }: { title: string, value: n
       </CardContent>
     </Card>
   );
+
+  if (href) {
+    return <Link href={href}>{cardContent}</Link>;
+  }
+  return cardContent;
 }
 
 function RiskRow({ label, count, total, color }: { label: string, count: number, total: number, color: string }) {

@@ -1,27 +1,40 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Users, Bell, GraduationCap, Building } from "lucide-react";
+import { LayoutDashboard, Users, Bell, GraduationCap, Building, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/students", label: "Students", icon: Users },
   { href: "/alerts", label: "Alerts", icon: Bell },
   { href: "/scholarships", label: "Scholarships", icon: GraduationCap },
 ];
 
 export function Layout({ children }: LayoutProps) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (localStorage.getItem("adminAuth") !== "true") {
+      setLocation("/admin/login");
+    }
+  }, [location, setLocation]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminAuth");
+    setLocation("/");
+  };
 
   return (
     <div className="flex min-h-screen w-full bg-background/50 text-foreground font-sans">
       <aside className="w-[280px] border-r border-border/50 bg-card/50 backdrop-blur-xl flex flex-col fixed inset-y-0 left-0 z-10">
         <div className="h-20 flex items-center px-8 border-b border-border/50">
-          <Link href="/" className="flex items-center gap-3 text-primary font-bold text-2xl tracking-tight hover:opacity-90 transition-opacity">
+          <Link href="/dashboard" className="flex items-center gap-3 text-primary font-bold text-2xl tracking-tight hover:opacity-90 transition-opacity">
             <div className="bg-primary text-primary-foreground p-2 rounded-xl">
               <Building className="w-6 h-6" />
             </div>
@@ -57,14 +70,19 @@ export function Layout({ children }: LayoutProps) {
           })}
         </div>
         <div className="p-6 border-t border-border/50 mt-auto">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm" style={{ fontFamily: "var(--app-font-display)" }}>
-              CO
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm" style={{ fontFamily: "var(--app-font-display)" }}>
+                CO
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-foreground">Counselor</span>
+                <span className="text-xs text-muted-foreground font-medium">Welfare Office</span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-foreground">Counselor</span>
-              <span className="text-xs text-muted-foreground font-medium">Welfare Office</span>
-            </div>
+            <Button variant="ghost" size="icon" onClick={handleLogout} className="text-muted-foreground hover:text-red-500 hover:bg-red-50">
+              <LogOut className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       </aside>
