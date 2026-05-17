@@ -4,6 +4,7 @@ import { db, studentsTable, conversationsTable, nudgeHistoryTable } from "@works
 import { buildTwiML } from "../lib/twilio";
 import { handleIntake, getWelcomeMessage, matchScholarships, firstYearResources } from "../lib/intake";
 import { recalculateRiskScore } from "../lib/risk";
+import { t, LANG_MAP } from "../lib/translations";
 
 const router: IRouter = Router();
 
@@ -95,8 +96,32 @@ router.post("/webhook/twilio", async (req, res): Promise<void> => {
   res.status(200).send(buildTwiML(responseText));
 });
 
-async function handleGeneralMessage(student: { name: string; id: number; year: number; casteCategory: string | null; incomeRange: string | null; district: string | null; feeStatus: string }, body: string): Promise<string> {
+// Track if a student is in "language change" mode
+const pendingLangChange = new Set<number>();
+
+async function handleGeneralMessage(student: { name: string; id: number; year: number; casteCategory: string | null; incomeRange: string | null; district: string | null; feeStatus: string; languagePreference: string }, body: string): Promise<string> {
   const lower = body.toLowerCase().trim();
+  const lang = student.languagePreference || "english";
+
+  // Handle language change confirmation (user sent a number 1-5 after "change language")
+  if (pendingLangChange.has(student.id)) {
+    pendingLangChange.delete(student.id);
+    const newLang = LANG_MAP[lower];
+    if (newLang) {
+      await db.update(studentsTable)
+        .set({ languagePreference: newLang })
+        .where(eq(studentsTable.id, student.id));
+      return t(newLang, "langChanged");
+    }
+    // Invalid number — show the prompt again
+    return t(lang, "langPrompt");
+  }
+
+  // "change language" command
+  if (lower === "change language" || lower === "language" || lower === "lang" || lower === "भाषा बदलें" || lower === "ಭಾಷೆ ಬದಲಿಸಿ" || lower === "భాష మార్చండి" || lower === "மொழி மாற்று") {
+    pendingLangChange.add(student.id);
+    return t(lang, "langPrompt");
+  }
 
   if (lower.includes("scholarship") || lower.includes("apply") || lower.includes("help me")) {
     return matchScholarships(student as Parameters<typeof matchScholarships>[0]);
@@ -145,13 +170,8 @@ Phone: [Your Phone]
 Replace the bracketed fields, print it, and submit with your income certificate.`;
   }
 
-  return `Hi ${student.name}! 👋 I'm here to help. Try asking:
-
-📋 *"scholarships"* — see what you qualify for
-💰 *"fee help"* — guidance on fee extension
-📚 *"resources"* — tips and links for college life
-
-What do you need help with?`;
+  // Default help menu — now in the student's language with "change language" option
+  return t(lang, "helpMenu", { name: student.name });
 }
 
 export default router;

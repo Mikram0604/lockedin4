@@ -2,10 +2,8 @@ import { db, studentsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import type { Student } from "@workspace/db";
 import { logger } from "./logger";
+import { t, LANG_MAP } from "./translations";
 
-const LANG_MAP: Record<string, string> = {
-  "1": "english", "2": "kannada", "3": "hindi", "4": "telugu", "5": "tamil",
-};
 const INCOME_MAP: Record<string, string> = {
   "1": "Below ₹1 lakh",
   "2": "₹1–2.5 lakh",
@@ -19,54 +17,18 @@ const FEE_MAP: Record<string, string> = {
   "1": "paid", "2": "partial", "3": "pending",
 };
 
-function q(step: number): string {
+function q(step: number, lang: string): string {
   switch (step) {
     case 0:
-      return `🙏 Welcome to *Disha* — your college guidance assistant!
-
-I'll help you find scholarships, manage fees, and navigate college life.
-
-First, which language do you prefer?
-1. English
-2. Kannada
-3. Hindi
-4. Telugu
-5. Tamil
-
-Reply with a number (1–5)`;
-    case 1:
-      return "Great! What is your *full name*?";
-    case 2:
-      return "What is the *name of your college*?";
-    case 3:
-      return "What is your *branch* and *year of study*?\n(e.g. CSE, Year 2  or  Mechanical, Year 1)";
-    case 4:
-      return "Which *city or town* are you from? (your hometown)";
-    case 5:
-      return `What is your approximate *family income per year*?
-1. Below ₹1 lakh
-2. ₹1–2.5 lakh
-3. ₹2.5–6 lakh
-4. Above ₹6 lakh
-
-Reply with a number (1–4)`;
-    case 6:
-      return `What is your *caste category*?
-1. SC
-2. ST
-3. OBC
-4. General / Others
-
-Reply with a number (1–4)`;
-    case 7:
-      return `What is your current *college fee payment status*?
-1. Paid in full ✅
-2. Partially paid ⚠️
-3. Not yet paid ❌
-
-Reply with a number (1–3)`;
-    default:
-      return "Thank you! Your profile is saved.";
+      return `🙏 Welcome to *Disha* — your college guidance assistant!\n\nI'll help you find scholarships, manage fees, and navigate college life.\n\nFirst, which language do you prefer?\n1. English\n2. ಕನ್ನಡ (Kannada)\n3. हिन्दी (Hindi)\n4. తెలుగు (Telugu)\n5. தமிழ் (Tamil)\n\nReply with a number (1–5)`;
+    case 1: return t(lang, "q1");
+    case 2: return t(lang, "q2");
+    case 3: return t(lang, "q3");
+    case 4: return t(lang, "q4");
+    case 5: return t(lang, "q5");
+    case 6: return t(lang, "q6");
+    case 7: return t(lang, "q7");
+    default: return "Thank you! Your profile is saved.";
   }
 }
 
@@ -129,12 +91,13 @@ Reply *"scholarships"* anytime to see what you qualify for, or *"fee help"* if y
 }
 
 export function getWelcomeMessage(): string {
-  return q(0);
+  return q(0, "english");
 }
 
 export async function handleIntake(student: Student, message: string): Promise<string> {
   const step = student.onboardingStep;
   const input = message.trim();
+  const lang = student.languagePreference || "english";
   let update: Partial<typeof student> = {};
   const nextStep = step + 1;
 
@@ -143,11 +106,11 @@ export async function handleIntake(student: Student, message: string): Promise<s
       update = { languagePreference: (LANG_MAP[input] ?? "english") as Student["languagePreference"] };
       break;
     case 1:
-      if (!input) return q(1);
+      if (!input) return q(1, lang);
       update = { name: input };
       break;
     case 2:
-      if (!input) return q(2);
+      if (!input) return q(2, lang);
       update = { college: input };
       break;
     case 3: {
@@ -178,12 +141,12 @@ export async function handleIntake(student: Student, message: string): Promise<s
       const isFirstYear = finalStudent.year === 1;
       const name = finalStudent.name || student.name;
       const feeWarning = feeStatus === "pending"
-        ? `\n\n⚠️ I see your fees are *not yet paid*. Reply *"fee help"* and I'll explain how to request a fee extension or deadline waiver from your college.`
+        ? t(lang, "feePending")
         : feeStatus === "partial"
-        ? `\n\n⚠️ Your fees are partially paid. Reply *"fee help"* for guidance on clearing the balance.`
+        ? t(lang, "feePartial")
         : "";
 
-      let response = `✅ *Profile complete! Welcome to Disha, ${name}!*\n\n${scholarships}${feeWarning}`;
+      let response = `${t(lang, "profileDone", { name })}\n\n${scholarships}${feeWarning}`;
       if (isFirstYear) {
         response += `\n\n─────────────────\n${firstYearResources()}`;
       }
@@ -191,11 +154,14 @@ export async function handleIntake(student: Student, message: string): Promise<s
     }
   }
 
+  // For step 0, we need to use the NEW language for the next question
+  const nextLang = step === 0 ? (LANG_MAP[input] ?? "english") : lang;
+
   await db.update(studentsTable)
     .set({ ...update, onboardingStep: nextStep })
     .where(eq(studentsTable.id, student.id));
 
-  return q(nextStep);
+  return q(nextStep, nextLang);
 }
 
 export { firstYearResources, matchScholarships };
