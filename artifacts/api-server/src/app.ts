@@ -41,7 +41,7 @@ const staticPath = path.resolve(__dirname, "../../disha-dashboard/dist");
 app.use(express.static(staticPath));
 
 // Fallback all other requests to index.html to support client-side routing
-app.get("*", (req, res) => {
+app.get(/(.*)/, (req, res) => {
   res.sendFile(path.resolve(staticPath, "index.html"));
 });
 
