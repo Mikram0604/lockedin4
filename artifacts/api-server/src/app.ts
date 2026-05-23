@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 
 // Serve static files from the frontend build
-const staticPath = path.resolve(__dirname, "../../disha-dashboard/dist");
+const staticPath = path.resolve(__dirname, "../../disha-dashboard/dist/public");
 app.use(express.static(staticPath));
 
 // Fallback all other requests to index.html to support client-side routing
