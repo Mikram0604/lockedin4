@@ -164,6 +164,15 @@ export interface DashboardSummary {
   riskBreakdown: DashboardSummaryRiskBreakdown;
 }
 
+export interface NudgeHistory {
+  id: number;
+  studentId: number;
+  message: string;
+  triggerReason: string;
+  responded: boolean;
+  createdAt: string;
+}
+
 export interface CheckInInput {
   message?: string;
 }

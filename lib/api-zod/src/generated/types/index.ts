@@ -17,6 +17,7 @@ export * from "./listRiskFlagsParams";
 export * from "./listRiskFlagsSeverity";
 export * from "./listStudentsParams";
 export * from "./listStudentsRiskLevel";
+export * from "./nudgeHistory";
 export * from "./riskFlag";
 export * from "./riskFlagSeverity";
 export * from "./scholarship";
