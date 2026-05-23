@@ -86,7 +86,7 @@ export function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </aside>
-      <main className="flex-1 ml-[280px] min-w-0 flex flex-col bg-background/50">
+      <main className="flex-1 ml-[280px] min-w-0 flex flex-col bg-counselor">
         <AnimatePresence mode="wait">
           <motion.div
             key={location}

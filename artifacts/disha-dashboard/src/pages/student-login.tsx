@@ -26,7 +26,7 @@ export default function StudentLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-student-login flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md mb-6">
         <Button variant="ghost" className="text-slate-500 hover:text-slate-900" onClick={() => setLocation("/")}>
           <ArrowLeft className="w-4 h-4 mr-2" /> Back

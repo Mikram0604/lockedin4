@@ -87,7 +87,7 @@ export function StudentLayout({ children }: StudentLayoutProps) {
           </div>
         </div>
       </aside>
-      <main className="flex-1 ml-[280px] min-w-0 flex flex-col bg-slate-50 relative">
+      <main className="flex-1 ml-[280px] min-w-0 flex flex-col bg-dashboard relative">
         <AnimatePresence mode="wait">
           <motion.div
             key={location}

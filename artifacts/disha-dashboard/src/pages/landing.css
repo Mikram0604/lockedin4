@@ -1,0 +1,209 @@
+/* ── Premium page backgrounds ── */
+
+/* Landing hero bg */
+.bg-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  filter: blur(1px);
+  z-index: 0;
+}
+.bg-hero > * { position: relative; z-index: 1; }
+
+/* Student login bg */
+.bg-student-login {
+  background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe, #dbeafe) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-student-login::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.10;
+  z-index: 0;
+}
+.bg-student-login > * { position: relative; z-index: 1; }
+
+/* Admin/Counselor login bg */
+.bg-counselor-login {
+  background: linear-gradient(to bottom right, #eff6ff, #dbeafe, #bfdbfe) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-counselor-login::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.10;
+  z-index: 0;
+}
+.bg-counselor-login > * { position: relative; z-index: 1; }
+
+/* Student dashboard content bg */
+.bg-dashboard {
+  background: linear-gradient(to bottom, #ffffff, #f0fdf4, #ecfdf5) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-dashboard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.05;
+  z-index: 0;
+}
+.bg-dashboard > * { position: relative; z-index: 1; }
+
+/* Fee assistance bg */
+.bg-fees {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fff8e1 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-fees::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.06;
+  z-index: 0;
+}
+.bg-fees > * { position: relative; z-index: 1; }
+
+/* Academic resources bg */
+.bg-academic {
+  background: linear-gradient(to bottom right, #faf5ff, #f3e8ff, #ede9fe) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-academic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.06;
+  z-index: 0;
+}
+.bg-academic > * { position: relative; z-index: 1; }
+
+/* Scholarships bg */
+.bg-scholarships {
+  background: linear-gradient(to bottom right, #f0fdf4, #dcfce7, #d1fae5) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-scholarships::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.05;
+  z-index: 0;
+}
+.bg-scholarships > * { position: relative; z-index: 1; }
+
+/* AI Chat bg */
+.bg-chat {
+  background: linear-gradient(to bottom, #f8fafc, #f0f9ff, #e0f2fe) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-chat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.04;
+  z-index: 0;
+}
+.bg-chat > * { position: relative; z-index: 1; }
+
+/* Counselor dashboard bg */
+.bg-counselor {
+  background: linear-gradient(to bottom, #f0f9ff, #e0f2fe, #dbeafe) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-counselor::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.05;
+  z-index: 0;
+}
+.bg-counselor > * { position: relative; z-index: 1; }
+
+/* Student detail bg */
+.bg-detail {
+  background: linear-gradient(to bottom, #f9fafb, #f3f4f6, #e5e7eb) !important;
+  position: relative;
+  overflow: hidden;
+}
+.bg-detail::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.05;
+  z-index: 0;
+}
+.bg-detail > * { position: relative; z-index: 1; }
+
+/* Particle canvas on landing */
+.particles-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Card glassmorphism for landing */
+.glass-card {
+  background: rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Fade in animation */
+@keyframes lpFadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
