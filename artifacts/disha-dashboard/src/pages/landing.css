@@ -1,23 +1,178 @@
-/* ── Premium page backgrounds ── */
+/* ══════════════════════════════════════════════════════════
+   CINEMATIC LANDING — Video hero with Instrument Serif
+   ══════════════════════════════════════════════════════════ */
 
-/* Landing hero bg */
-.bg-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
+/* ── Container ── */
+.landing-cinematic {
   position: relative;
+  min-height: 100svh;
+  width: 100%;
   overflow: hidden;
+  background: #ffffff;
 }
-.bg-hero::before {
-  content: '';
+
+/* ── Video background ── */
+.landing-video-wrapper {
+  position: absolute;
+  inset: auto 0 0 0;
+  top: 300px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.landing-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.08s linear;
+}
+
+.landing-video-gradient {
   position: absolute;
   inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.15;
-  filter: blur(1px);
-  z-index: 0;
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    transparent 18%,
+    transparent 75%,
+    #ffffff 100%
+  );
+  z-index: 1;
 }
-.bg-hero > * { position: relative; z-index: 1; }
+
+/* ── Navigation ── */
+.landing-cinematic-nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+}
+
+.cinematic-brand {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.875rem;
+  letter-spacing: -0.01em;
+  color: #000000;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.cinematic-brand sup {
+  font-size: 0.5em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+.cinematic-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.cinematic-nav-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #6F6F6F;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.cinematic-nav-link:hover {
+  color: #000000;
+}
+
+.cinematic-nav-link--active {
+  color: #000000;
+}
+
+.cinematic-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: #000000;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.625rem 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cinematic-cta-btn:hover {
+  transform: scale(1.03);
+}
+
+/* ── Hero ── */
+.cinematic-hero {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: calc(8rem - 75px) 1.5rem 10rem;
+}
+
+.cinematic-headline {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -2.46px;
+  color: #000000;
+  max-width: 80rem;
+  margin: 0;
+}
+
+.cinematic-headline em {
+  font-style: italic;
+  color: #6F6F6F;
+}
+
+.cinematic-description {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.125rem);
+  color: #6F6F6F;
+  max-width: 42rem;
+  margin-top: 2rem;
+  line-height: 1.7;
+}
+
+.cinematic-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: #000000;
+  border: none;
+  border-radius: 9999px;
+  padding: 1.25rem 3.5rem;
+  margin-top: 3rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cinematic-hero-cta:hover {
+  transform: scale(1.03);
+}
+
+/* ══════════════════════════════════════════════════════════
+   PAGE BACKGROUNDS (unchanged from original)
+   ══════════════════════════════════════════════════════════ */
 
 /* Student login bg */
 .bg-student-login {
@@ -181,29 +336,61 @@
 }
 .bg-detail > * { position: relative; z-index: 1; }
 
-/* Particle canvas on landing */
-.particles-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .landing-cinematic-nav {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .cinematic-brand {
+    font-size: 1.5rem;
+  }
+
+  .cinematic-nav-links {
+    display: none;
+  }
+
+  .cinematic-hero {
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+  }
+
+  .cinematic-headline {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    letter-spacing: -1px;
+  }
+
+  .landing-video-wrapper {
+    top: 200px;
+  }
 }
 
-/* Card glassmorphism for landing */
-.glass-card {
-  background: rgba(255, 255, 255, 0.18) !important;
-  backdrop-filter: blur(25px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-}
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.28) !important;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cinematic-nav-links {
+    gap: 1.25rem;
+  }
+
+  .cinematic-headline {
+    font-size: clamp(3rem, 7vw, 5rem);
+  }
+
+  .landing-video-wrapper {
+    top: 260px;
+  }
 }
 
-/* Fade in animation */
-@keyframes lpFadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-rise,
+  .animate-fade-rise-delay,
+  .animate-fade-rise-delay-2 {
+    animation: none;
+    opacity: 1;
+  }
+
+  .cinematic-cta-btn:hover,
+  .cinematic-hero-cta:hover {
+    transform: none;
+  }
 }
