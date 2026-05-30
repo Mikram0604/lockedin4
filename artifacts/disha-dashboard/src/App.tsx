@@ -56,10 +56,13 @@ function Router() {
   );
 }
 
+import GlobalVideoBackground from "@/components/GlobalVideoBackground";
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <GlobalVideoBackground />
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <Router />
         </WouterRouter>

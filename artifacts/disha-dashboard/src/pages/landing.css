@@ -176,7 +176,7 @@
 
 /* Student login bg */
 .bg-student-login {
-  background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe, #dbeafe) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -194,7 +194,7 @@
 
 /* Admin/Counselor login bg */
 .bg-counselor-login {
-  background: linear-gradient(to bottom right, #eff6ff, #dbeafe, #bfdbfe) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -212,7 +212,7 @@
 
 /* Student dashboard content bg */
 .bg-dashboard {
-  background: linear-gradient(to bottom, #ffffff, #f0fdf4, #ecfdf5) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -230,7 +230,7 @@
 
 /* Fee assistance bg */
 .bg-fees {
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fff8e1 100%) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -248,7 +248,7 @@
 
 /* Academic resources bg */
 .bg-academic {
-  background: linear-gradient(to bottom right, #faf5ff, #f3e8ff, #ede9fe) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -266,7 +266,7 @@
 
 /* Scholarships bg */
 .bg-scholarships {
-  background: linear-gradient(to bottom right, #f0fdf4, #dcfce7, #d1fae5) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -284,7 +284,7 @@
 
 /* AI Chat bg */
 .bg-chat {
-  background: linear-gradient(to bottom, #f8fafc, #f0f9ff, #e0f2fe) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -302,7 +302,7 @@
 
 /* Counselor dashboard bg */
 .bg-counselor {
-  background: linear-gradient(to bottom, #f0f9ff, #e0f2fe, #dbeafe) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }
@@ -320,7 +320,7 @@
 
 /* Student detail bg */
 .bg-detail {
-  background: linear-gradient(to bottom, #f9fafb, #f3f4f6, #e5e7eb) !important;
+  background: transparent !important;
   position: relative;
   overflow: hidden;
 }

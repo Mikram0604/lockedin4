@@ -31,7 +31,7 @@ export function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-background/50 text-foreground font-sans">
+    <div className="flex min-h-screen w-full bg-transparent text-foreground font-sans">
       <aside className="w-[280px] border-r border-border/50 bg-card/50 backdrop-blur-xl flex flex-col fixed inset-y-0 left-0 z-10">
         <div className="h-20 flex items-center px-8 border-b border-border/50">
           <Link href="/dashboard" className="flex items-center gap-3 text-primary font-bold text-2xl tracking-tight hover:opacity-90 transition-opacity">

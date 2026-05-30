@@ -32,8 +32,8 @@ export function StudentLayout({ children }: StudentLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-slate-50 text-slate-900 font-sans">
-      <aside className="w-[280px] border-r border-slate-200 bg-white flex flex-col fixed inset-y-0 left-0 z-10 shadow-sm">
+    <div className="flex min-h-screen w-full bg-transparent text-slate-900 font-sans">
+      <aside className="w-[280px] border-r border-slate-200 bg-white/60 backdrop-blur-xl flex flex-col fixed inset-y-0 left-0 z-10 shadow-sm">
         <div className="h-20 flex items-center px-8 border-b border-slate-100">
           <Link href="/student/dashboard" className="flex items-center gap-3 text-blue-600 font-bold text-2xl tracking-tight hover:opacity-90 transition-opacity">
             <div className="bg-blue-600 text-white p-2 rounded-xl">
