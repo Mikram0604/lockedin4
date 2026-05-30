@@ -1,6 +1,71 @@
+import { useEffect, useRef, useCallback } from "react";
 import { Link } from "wouter";
+import { GraduationCap, Briefcase } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+const VIDEO_URL =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4";
 
 export default function Landing() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Custom fade-in / fade-out loop logic
+  const animateLoop = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let rafId: number;
+
+    const tick = () => {
+      if (!video || video.paused) return;
+
+      const { currentTime, duration } = video;
+      if (duration && isFinite(duration)) {
+        // Fade in during the first 0.5s
+        if (currentTime < 0.5) {
+          video.style.opacity = String(Math.min(currentTime / 0.5, 1));
+        }
+        // Fade out during the last 0.5s
+        else if (currentTime > duration - 0.5) {
+          const remaining = duration - currentTime;
+          video.style.opacity = String(Math.max(remaining / 0.5, 0));
+        } else {
+          video.style.opacity = "1";
+        }
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    // On ended: fade to 0, wait 100ms, then restart
+    const handleEnded = () => {
+      video.style.opacity = "0";
+      setTimeout(() => {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      }, 100);
+    };
+
+    video.addEventListener("ended", handleEnded);
+    rafId = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      video.removeEventListener("ended", handleEnded);
+    };
+  }, []);
+
+  useEffect(() => {
+    const cleanup = animateLoop();
+    return cleanup;
+  }, [animateLoop]);
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-transparent">
       {/* ── Navigation bar (z-10) ── */}
@@ -27,9 +92,38 @@ export default function Landing() {
           </Link>
         </div>
 
-        <Link href="/admin/login" className="rounded-full px-6 py-2.5 text-sm bg-[#000000] text-white hover:scale-103 transition-transform" style={{ fontFamily: 'Inter' }}>
-          Begin Journey
-        </Link>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="rounded-full px-6 py-2.5 text-sm bg-[#000000] text-white hover:scale-103 transition-transform cursor-pointer" style={{ fontFamily: 'Inter' }}>
+              Begin Journey
+            </button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md bg-white/90 backdrop-blur-xl border-white/20">
+            <DialogHeader>
+              <DialogTitle className="text-center text-4xl mt-4 font-normal text-[#000000]" style={{ fontFamily: 'Instrument Serif' }}>Choose your path</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4 py-6">
+              <Link href="/student" className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all group">
+                <div className="bg-blue-50 text-blue-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-slate-900" style={{ fontFamily: 'Inter' }}>Student Login</span>
+                  <span className="text-sm text-slate-500" style={{ fontFamily: 'Inter' }}>Access scholarships, chat, and resources</span>
+                </div>
+              </Link>
+              <Link href="/admin/login" className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all group">
+                <div className="bg-purple-50 text-purple-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <Briefcase className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-slate-900" style={{ fontFamily: 'Inter' }}>Counselor Login</span>
+                  <span className="text-sm text-slate-500" style={{ fontFamily: 'Inter' }}>Manage students, alerts, and triage</span>
+                </div>
+              </Link>
+            </div>
+          </DialogContent>
+        </Dialog>
       </nav>
 
       {/* ── Hero section (z-10) ── */}
@@ -53,13 +147,41 @@ export default function Landing() {
           in their own language.
         </p>
 
-        <Link 
-          href="/student" 
-          className="rounded-full px-14 py-5 text-base mt-12 bg-[#000000] text-[#FFFFFF] hover:scale-103 transition-transform animate-fade-rise-delay-2"
-          style={{ fontFamily: 'Inter' }}
-        >
-          Begin Journey
-        </Link>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button 
+              className="rounded-full px-14 py-5 text-base mt-12 bg-[#000000] text-[#FFFFFF] hover:scale-103 transition-transform animate-fade-rise-delay-2 cursor-pointer"
+              style={{ fontFamily: 'Inter' }}
+            >
+              Begin Journey
+            </button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md bg-white/90 backdrop-blur-xl border-white/20">
+            <DialogHeader>
+              <DialogTitle className="text-center text-4xl mt-4 font-normal text-[#000000]" style={{ fontFamily: 'Instrument Serif' }}>Choose your path</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4 py-6">
+              <Link href="/student" className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all group">
+                <div className="bg-blue-50 text-blue-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-slate-900" style={{ fontFamily: 'Inter' }}>Student Login</span>
+                  <span className="text-sm text-slate-500" style={{ fontFamily: 'Inter' }}>Access scholarships, chat, and resources</span>
+                </div>
+              </Link>
+              <Link href="/admin/login" className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all group">
+                <div className="bg-purple-50 text-purple-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <Briefcase className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-slate-900" style={{ fontFamily: 'Inter' }}>Counselor Login</span>
+                  <span className="text-sm text-slate-500" style={{ fontFamily: 'Inter' }}>Manage students, alerts, and triage</span>
+                </div>
+              </Link>
+            </div>
+          </DialogContent>
+        </Dialog>
       </section>
     </div>
   );
